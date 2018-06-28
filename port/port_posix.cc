@@ -49,5 +49,9 @@ void InitOnce(OnceType* once, void (*initializer)()) {
   PthreadCall("once", pthread_once(once, initializer));
 }
 
+uint32_t AcceleratedCRC32C(uint32_t crc, const char* buf, size_t size) {
+	return 0;
+}
+
 }  // namespace port
 }  // namespace leveldb

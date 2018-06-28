@@ -101,7 +101,7 @@ class PosixSequentialFile: public SequentialFile {
 
   virtual Status Read(size_t n, Slice* result, char* scratch) {
     Status s;
-    size_t r = fread_unlocked(scratch, 1, n, file_);
+    size_t r = fread(scratch, 1, n, file_);
     *result = Slice(scratch, r);
     if (r < n) {
       if (feof(file_)) {
@@ -224,7 +224,7 @@ class PosixWritableFile : public WritableFile {
   }
 
   virtual Status Append(const Slice& data) {
-    size_t r = fwrite_unlocked(data.data(), 1, data.size(), file_);
+    size_t r = fwrite(data.data(), 1, data.size(), file_);
     if (r != data.size()) {
       return IOError(filename_, errno);
     }
@@ -241,7 +241,7 @@ class PosixWritableFile : public WritableFile {
   }
 
   virtual Status Flush() {
-    if (fflush_unlocked(file_) != 0) {
+    if (fflush(file_) != 0) {
       return IOError(filename_, errno);
     }
     return Status::OK();
@@ -280,7 +280,7 @@ class PosixWritableFile : public WritableFile {
     if (!s.ok()) {
       return s;
     }
-    if (fflush_unlocked(file_) != 0 ||
+    if (fflush(file_) != 0 ||
         fdatasync(fileno(file_)) != 0) {
       s = Status::IOError(filename_, strerror(errno));
     }
